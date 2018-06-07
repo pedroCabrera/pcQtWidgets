@@ -99,7 +99,7 @@ if __name__ == '__main__':
     import sys
     app = QtWidgets.QApplication(sys.argv)
     window = pc_ImageCanvas(None)
-    window.setPhoto(QtGui.QPixmap(r"logo.png"))
+    window.setPhoto(QtGui.QPixmap(r"..\logo.png"))
     window.setGeometry(500, 300, 800, 600)
     window.show()
     sys.exit(app.exec_())
