@@ -4,10 +4,7 @@
 import sys
 from Qt import QtGui, QtCore,QtWidgets
 
-import numpy as np
-
 styleSheet = """
-
 
 QSlider,QSlider:disabled,QSlider:focus     {  
                           background: qcolor(0,0,0,0);   }
@@ -18,6 +15,7 @@ QSlider:item:hover    {   background-color: QLinearGradient( x1: 0, y1: 0, x2: 0
 QWidget:item:selected {   background-color: QLinearGradient( x1: 0, y1: 0, x2: 0, y2: 1, stop: 0 #ffa02f, stop: 1 #d7801a);      }
 
  QSlider::groove:horizontal {
+ 
     border: 1px solid #999999;
     background: qcolor(0,0,0,0);
  }
@@ -26,6 +24,7 @@ QSlider::handle:horizontal {
     width: 3px;
  } 
 """
+
 class PC_timeline(QtWidgets.QSlider):
     def __init__(self, parent,*args):
         super(PC_timeline, self).__init__(parent=parent,*args)
