@@ -168,7 +168,7 @@ class testWidg(QtWidgets.QWidget):
         self.sld = PC_timeline(self)
         self.layout().addWidget(self.sld)
         
-        self.setGeometry(-800, 300, 390, 80)
+        #self.setGeometry(-800, 300, 390, 80)
 
         
 def main():
