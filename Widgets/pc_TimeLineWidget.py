@@ -67,7 +67,7 @@ class PC_timeline(QtWidgets.QSlider):
         w = self.width()
         h = self.height()
         nb =  (self.maximum()-self.minimum())
-        fStep = float(w) / nb
+        fStep = int(float(w) / nb)
         step = max(1,int(round(fStep)))
         
         pen = QtGui.QPen(QtGui.QColor(200, 200, 200), 1, 
@@ -83,50 +83,56 @@ class PC_timeline(QtWidgets.QSlider):
         fh = metrics.height()      
         for e,i in enumerate(range(0,pxNb, step)):
             pos = self.style().sliderPositionFromValue(self.minimum(),self.maximum(),r[e],self.width())
-            half = h/2
+            half = int(h/2)
             if r[e] in self.cachedFrmaes:
                 qp.setPen(QtGui.QColor(0, 255, 0))
                 qp.setBrush(QtGui.QColor(0, 255, 0))
-                qp.drawRect(pos-(fStep/2),half+5, fStep, 1.5)  
+                qp.drawRect(pos-int(step/2),half+5, step, int(1.5))  
                 qp.setPen(pen)
                 qp.setBrush(QtCore.Qt.NoBrush)
             elif r[e] in self.missingFrames:
                 qp.setPen(QtGui.QColor(255, 0, 0))
                 qp.setBrush(QtGui.QColor(255, 0, 0))
-                qp.drawRect(pos-(fStep/2),half+5, fStep, 1.5)  
+                qp.drawRect(pos-int(step/2),half+5, step, int(1.5))  
                 qp.setPen(pen)
                 qp.setBrush(QtCore.Qt.NoBrush)                
             if (r[e]%5) == 0:
                 s = 4
                 text = r[e]
                 fw = metrics.width(str(text))
-                qp.drawText((pos)-fw/2, h-fh/3, str(text))
+                qp.drawText(int((pos)-fw/2), int(h-fh/3), str(text))
             else:
-                s = 1.5
+                s = int(1.5)
             qp.drawLine(pos,half+s, pos,half-s)
         pos = self.style().sliderPositionFromValue(self.minimum(),self.maximum(),self.value(),self.width())
-        fw = metrics.width(str(self.value()))
+        fw = metrics.width("0")
         qp.setPen(QtGui.QColor(255,160,47))
-        qp.drawText((pos)+fw/2, 0+fh, str(self.value())) 
+        if self.value() > self.maximum()-(self.maximum()/2):
+            fw += metrics.width(str(self.value()))
+            fw *= -1
+        qp.drawText((pos)+fw, 0+fh, str(self.value())) 
         if self.hover:
             val = self.style().sliderValueFromPosition(self.minimum(),self.maximum(),self.hoverPos.x(),self.width())
             if val != self.value():
                     pos = self.style().sliderPositionFromValue(self.minimum(),self.maximum(),val,self.width())
-                    fw = metrics.width(str(val))
+                    fw = metrics.width("0")
+                    if val > self.maximum()-(self.maximum()/2):
+                        fw += metrics.width(str(val))
+                        fw *= -1
                     pen2 = QtGui.QPen(QtGui.QColor(255,160,47,100), 2, QtCore.Qt.SolidLine)
                     qp.setPen(pen2)
                     qp.drawLine(pos,0, pos,h)
-                    qp.drawText((pos)+fw/2, 0+fh, str(val)) 
+                    qp.drawText((pos)+fw, 0+fh, str(val)) 
         qp.setPen(pen)       
     def mousePressEvent(self,event):
         if event.modifiers() == QtCore.Qt.AltModifier:
             self.PressPos = event.globalPos()
             self.MovePos = event.globalPos()
-        if event.button() == QtCore.Qt.LeftButton:
+        if event.button() == QtCore.Qt.LeftButton and event.modifiers() != QtCore.Qt.AltModifier:
             butts = QtCore.Qt.MouseButtons(QtCore.Qt.MidButton)
-            nevent = QtGui.QMouseEvent(event.type(),event.pos(),event.globalPos(),4,butts,event.modifiers())
+            nevent = QtGui.QMouseEvent(event.type(),QtCore.QPointF(event.pos()),QtCore.QPointF(event.globalPos()),QtCore.Qt.MidButton,butts,event.modifiers())
             super(PC_timeline, self).mousePressEvent(nevent)
-        else:
+        elif event.modifiers() != QtCore.Qt.AltModifier:
             super(PC_timeline, self).mousePressEvent(event)
     def wheelEvent(self,event):
         newMin = self.minimum()+(round(120/event.delta()))
